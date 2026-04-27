@@ -1,0 +1,167 @@
+# Smithery Registry — hive-mcp-sla-monitor
+# https://smithery.ai
+
+startCommand:
+  type: http
+  configSchema:
+    type: object
+    properties: {}
+    required: []
+  url: https://hive-mcp-sla-monitor.onrender.com/mcp
+
+name: hive-mcp-sla-monitor
+displayName: hive-mcp-sla-monitor — SLA observation broker
+version: "1.0.0"
+description: >
+  SLA observation broker for the A2A network. Agents register a public health
+  endpoint with target uptime and p95 latency; the shim probes it on a 60s
+  schedule (read-only HTTP, 8s timeout) and records uptime/latency. Breach
+  records are emitted when the rolling window misses targets. $0.01/probe
+  registered, $0.10/breach-alert read, via x402 on Base L2. Observation only.
+  Hive does not underwrite, indemnify, pay claims, or hold custody.
+
+author:
+  name: Steve Rotzin
+  email: steve@thehiveryiq.com
+  url: https://www.thehiveryiq.com
+
+license: MIT
+homepage: https://github.com/srotzin/hive-mcp-sla-monitor
+repository:
+  type: git
+  url: https://github.com/srotzin/hive-mcp-sla-monitor
+
+transport: streamable-http
+endpoint: https://hive-mcp-sla-monitor.onrender.com/mcp
+protocol: "2024-11-05"
+
+categories:
+  - observability
+  - agent-to-agent
+  - monitoring
+  - sla
+  - uptime
+
+tags:
+  - mcp
+  - hive
+  - sla
+  - uptime
+  - monitor
+  - observability
+  - x402
+  - 402
+  - ai-agents
+  - a2a
+  - usdc
+  - base-l2
+
+tools:
+  - name: sla_register
+    description: >
+      Register a public health endpoint for SLA observation. The shim probes
+      it on a 60s schedule (read-only HTTP, 8s timeout) and records uptime
+      and latency. $0.01 USDC via x402. Observation only.
+    inputs:
+      - name: did
+        type: string
+        required: true
+        description: "Agent DID (did:method:identifier)."
+      - name: endpoint
+        type: string
+        required: true
+        description: "Public HTTP/HTTPS health endpoint."
+      - name: target_uptime_pct
+        type: number
+        required: true
+        description: "Target uptime percent over the rolling window."
+      - name: target_p95_ms
+        type: integer
+        required: true
+        description: "Target p95 latency in milliseconds."
+      - name: window_minutes
+        type: integer
+        required: false
+        description: "Rolling window length in minutes. Default 60."
+  - name: sla_status
+    description: >
+      Read the current observed uptime and p95 latency for a registered
+      monitor over its rolling window. $0.01 USDC via x402.
+    inputs:
+      - name: monitor_id
+        type: string
+        required: true
+        description: "Monitor id returned by sla_register."
+  - name: sla_breach_history
+    description: >
+      Read recent breach records for a registered monitor. $0.10 USDC via
+      x402. Each record carries the no-underwriting disclaimer.
+    inputs:
+      - name: monitor_id
+        type: string
+        required: true
+        description: "Monitor id."
+      - name: since_seconds_ago
+        type: integer
+        required: false
+        description: "Lookback window. Default 86400 (24h)."
+      - name: limit
+        type: integer
+        required: false
+        description: "Max records to return. Default 50."
+  - name: sla_unregister
+    description: >
+      Deactivate a monitor so the shim stops probing it. Free.
+    inputs:
+      - name: monitor_id
+        type: string
+        required: true
+        description: "Monitor id."
+
+runtime:
+  type: node
+  version: ">=18"
+  command: node server.js
+  env:
+    - name: PORT
+      default: "3000"
+      required: false
+    - name: ENABLE
+      default: "true"
+      required: false
+    - name: WALLET_ADDRESS
+      default: "0x15184bf50b3d3f52b60434f8942b7d52f2eb436e"
+      required: false
+    - name: SLA_REGISTER_PRICE_USDC
+      default: "0.01"
+      required: false
+    - name: SLA_BREACH_PRICE_USDC
+      default: "0.10"
+      required: false
+    - name: SLA_STATUS_PRICE_USDC
+      default: "0.01"
+      required: false
+    - name: SLA_PROBE_INTERVAL_MS
+      default: "60000"
+      required: false
+    - name: SLA_PROBE_TIMEOUT_MS
+      default: "8000"
+      required: false
+    - name: SLA_MAX_MONITORS
+      default: "100"
+      required: false
+    - name: BASE_RPC_URL
+      default: "https://mainnet.base.org"
+      required: false
+
+brand:
+  color: "#C08D23"
+  name: "Hive Civilization gold (Pantone 1245 C)"
+
+policy:
+  custody: never
+  underwriting: never
+  indemnification: never
+  claim_settlement: never
+  role: observation_only
+  disclaimer: "Hive does not underwrite or settle SLA claims. This is observational data only."

@@ -1,0 +1,45 @@
+{
+  "name": "hive-mcp-sla-monitor",
+  "version": "1.0.0",
+  "description": "SLA observation broker for the A2A network. Agents register public health endpoints with target uptime and p95 latency; the shim probes them on schedule and emits breach alerts. $0.01/probe and $0.10/breach-alert via x402. Observation only. Hive does not underwrite, indemnify, or settle SLA claims.",
+  "type": "module",
+  "main": "server.js",
+  "bin": {
+    "hive-mcp-sla-monitor": "./server.js"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "smoke": "node smoke.js"
+  },
+  "keywords": [
+    "mcp",
+    "hive",
+    "sla",
+    "uptime",
+    "monitor",
+    "observability",
+    "x402",
+    "402",
+    "a2a",
+    "agent-to-agent",
+    "ai-agents",
+    "usdc",
+    "base-l2"
+  ],
+  "author": "Steve Rotzin <steve@thehiveryiq.com> (https://www.thehiveryiq.com)",
+  "license": "MIT",
+  "homepage": "https://github.com/srotzin/hive-mcp-sla-monitor",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/srotzin/hive-mcp-sla-monitor"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.3.0",
+    "ethers": "^6.13.2",
+    "express": "^4.19.2"
+  }
+}
