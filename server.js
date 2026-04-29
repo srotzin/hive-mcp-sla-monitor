@@ -869,6 +869,63 @@ if (!ENABLE) {
   startScheduler();
 }
 
+// ─── Schema discoverability (auto-injected) ──────────────────────────────
+app.get('/.well-known/agent-card.json', (req, res) => res.json({
+  name: 'hive-mcp-sla-monitor',
+  description: "Hive Civilization SLA monitor MCP \u2014 pay-per-register endpoint observability with x402 USDC settlement. Observational only \u2014 Hive does not underwrite SLA claims. New agents: first call free. Loyalty: every 6th paid call is free. Pay in USDC on Base L2.",
+  url: 'https://hive-mcp-sla-monitor.onrender.com',
+  provider: { organization: 'Hive Civilization', url: 'https://www.thehiveryiq.com', contact: 'steve@thehiveryiq.com' },
+  version: '1.0.0',
+  capabilities: { streaming: false, pushNotifications: false, stateTransitionHistory: false },
+  authentication: {
+    schemes: ['x402'],
+    credentials: { type:'x402', asset:'USDC', network:'base',
+      asset_address: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+      recipient: '0x15184bf50b3d3f52b60434f8942b7d52f2eb436e'
+    }
+  },
+  defaultInputModes: ['application/json'],
+  defaultOutputModes: ['application/json'],
+  extensions: {
+    hive_pricing: {
+      currency: 'USDC', network: 'base', model: 'per_call',
+      first_call_free: true, loyalty_threshold: 6,
+      loyalty_message: 'Every 6th paid call is free'
+    }
+  },
+  bogo: {
+    first_call_free: true, loyalty_threshold: 6,
+    pitch: "Pay this once, your 6th paid call is on the house. New here? Add header 'x-hive-did' to claim your first call free.",
+    claim_with: 'x-hive-did header'
+  }
+}));
+app.get('/.well-known/ap2.json', (req, res) => res.json({
+  ap2_version: '1',
+  agent: {
+    name: 'hive-mcp-sla-monitor',
+    did: 'did:web:hive-mcp-sla-monitor.onrender.com',
+    description: "Hive Civilization SLA monitor MCP \u2014 pay-per-register endpoint observability with x402 USDC settlement. Observational only \u2014 Hive does not underwrite SLA claims. New agents: first call free. Loyalty: every 6th paid call is free. Pay in USDC on Base L2."
+  },
+  endpoints: {
+    mcp: 'https://hive-mcp-sla-monitor.onrender.com/mcp',
+    agent_card: 'https://hive-mcp-sla-monitor.onrender.com/.well-known/agent-card.json'
+  },
+  payments: {
+    schemes: ['x402'],
+    primary: { scheme:'x402', network:'base', asset:'USDC',
+      asset_address: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+      recipient: '0x15184bf50b3d3f52b60434f8942b7d52f2eb436e'
+    }
+  },
+  bogo: {
+    first_call_free: true, loyalty_threshold: 6,
+    pitch: "Pay this once, your 6th paid call is on the house.",
+    claim_with: 'x-hive-did header'
+  },
+  brand: { color: '#C08D23', name: 'Hive Civilization' }
+}));
+
+
 app.listen(PORT, () => {
   console.log(`[hive-mcp-sla-monitor] listening on :${PORT} — inbound only — observation only — ${DISCLAIMER}`);
 });
