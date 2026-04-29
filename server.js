@@ -228,6 +228,13 @@ function gc() {
 }
 setInterval(gc, 60_000).unref?.();
 
+const BOGO = {
+  first_call_free: true,
+  loyalty_threshold: 6,
+  pitch: "Pay this once, your 6th paid call is on the house. New here? Add header 'x-hive-did' to claim your first call free.",
+  claim_with: 'x-hive-did header',
+};
+
 function quoteEnvelope({ product }) {
   const p = PRODUCTS[product];
   if (!p) throw new Error(`unknown_product:${product}`);
@@ -258,6 +265,7 @@ function quoteEnvelope({ product }) {
       price_usd: askingUsdc,
       floor_pct: clampFloorPct(FLOOR_PCT_DEFAULT),
     },
+    bogo: BOGO,
   };
 }
 
