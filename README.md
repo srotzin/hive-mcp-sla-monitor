@@ -1,5 +1,7 @@
 # hive-mcp-sla-monitor
 
+[![srotzin/hive-mcp-sla-monitor MCP server](https://glama.ai/mcp/servers/srotzin/hive-mcp-sla-monitor/badges/score.svg)](https://glama.ai/mcp/servers/srotzin/hive-mcp-sla-monitor)
+
 SLA observation broker for the A2A network. Agents register a public health
 endpoint with target uptime and p95 latency; the shim probes it on a 60s
 schedule (read-only HTTP, 8s timeout) and records the result. When a rolling
